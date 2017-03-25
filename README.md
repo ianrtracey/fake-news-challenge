@@ -17,6 +17,22 @@ Classify the stance of the body text relative to the claim made in the headline 
   3. Discusses: The body text discuss the same topic as the headline, but does not take a position
   4. Unrelated: The body text discusses a different topic than the headline
 
-# References
+# Baseline
 ## Current FNC Baseline
 https://github.com/FakeNewsChallenge/fnc-1-baseline
+
+### Features
+  1. lemmatizes and lowercases word from nltk
+  2. removes stop words
+  3. uses a list of hardcoded refuting features for headline (returns 1 if a refuting word is in the headline, otherwise 0) 
+  4. uses a list of hardcoded polarity features (1 if polarizing, otherwise 0) for both headline and body
+  5. counts how many times a token in the title appears in the body
+  6. count how many times an n-gram of the title appears in the entire body and intro paragraph
+
+# Reference
+## Current FNC Baseline
+https://github.com/FakeNewsChallenge/fnc-1-baseline
+
+## Support Vector Machine
+At the heart of this project's classification system is a support vector machine (SVM). A SVM is a supervised learning model used for classification and regression analysis.
+  1. http://www.svm-tutorial.com/2017/02/svms-overview-support-vector-machines/
