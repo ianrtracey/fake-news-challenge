@@ -30,6 +30,8 @@ def get_binary_co_occurence(headline, body):
 
 def get_n_grams_relevance(headline, body):
     headline_str = " ".join(headline)
+    # we might want to loop over n-grams from 0-10 or
+    # something here in order to catch more exact terms
     tri_grams = get_n_gram(body, 3)
     n_gram_hit_count = 0
     for gram in tri_grams:
@@ -38,8 +40,6 @@ def get_n_grams_relevance(headline, body):
             n_gram_hit_count += 1
 
     return n_gram_hit_count
-
-
 
 
 def get_feature_set(headline, body):
@@ -56,14 +56,3 @@ def get_feature_set(headline, body):
 
     feature_set = FeatureSet(co_occurence, polarity_score, refuting_score, n_gram_hits)
     return feature_set
-
-
-
-
-
-
-
-
-
-
-
