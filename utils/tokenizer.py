@@ -9,7 +9,14 @@ def tokenize_text(text):
 
 def lemmatize_text(tokenizedText):
     wnl = WordNetLemmatizer()
-    lemmatizedText = [wnl.lemmatize(word).lower() for word in tokenizedText]
+    lemmatizedText = []
+    for word in tokenizedText:
+        try:
+            lemma = wnl.lemmatize(word).lower()
+            lemmatizedText.append(lemma)
+        except UnicodeDecodeError:
+            next
+
     return lemmatizedText
 
 def remove_stop_words(tokenizedText):
@@ -21,6 +28,7 @@ def clean(text):
     tokenizedText = tokenize_text(text)
     lemmatizedText = lemmatize_text(tokenizedText)
     result = remove_stop_words(lemmatizedText)
-    return result
+    ascii_result = [word.encode('ascii') for word in result]
+    return ascii_result
 
 
