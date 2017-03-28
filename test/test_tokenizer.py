@@ -23,7 +23,7 @@ class TestTokenizer(unittest.TestCase):
         tokenizedArticle = tokenizer.tokenize_text(text)
         lemmatizedText = tokenizer.lemmatize_text(tokenizedArticle)
         removedStopWords = tokenizer.remove_stop_words(lemmatizedText)
-        print(removedStopWords)
+        self.assertTrue( len(removedStopWords) < len(lemmatizedText) )
 
 
 

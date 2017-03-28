@@ -17,4 +17,10 @@ def remove_stop_words(tokenizedText):
     text = [word for word in tokenizedText if word not in stop_words]
     return text
 
+def clean(text):
+    tokenizedText = tokenize_text(text)
+    lemmatizedText = lemmatize_text(tokenizedText)
+    result = remove_stop_words(lemmatizedText)
+    return result
+
 
