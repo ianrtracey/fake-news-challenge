@@ -1,2 +1,4 @@
-sci-kit
+scipy
+scikit-learn
 tqdm
+nltk
