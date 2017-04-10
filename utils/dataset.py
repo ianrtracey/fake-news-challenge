@@ -1,12 +1,10 @@
 from csv import DictReader
 
 class DataSet():
-    def __init__(self, path="data"):
+    def __init__(self, path="data", bodies="train_bodies.csv", stances="train_stances.csv"):
         self.path = path
 
         print("Reading dataset")
-        bodies = "train_bodies.csv"
-        stances = "train_stances.csv"
 
         self.stances = self.read(stances)
         articles = self.read(bodies)
@@ -35,3 +33,21 @@ class DataSet():
                 rows.append(line)
         return rows
 
+def segmentize_dataset(dataset):
+    headlines = []
+    bodies = []
+    classifications = []
+    print ( 'Segmentizing Dataset...' )
+    for stance in dataset.stances:
+        headline = stance['Headline']
+        headlines.append(headline)
+        body = dataset.getBody(stance)
+        bodies.append(body)
+        classification = stance['Stance']
+        classifications.append(classification)
+    print ( 'Done.' )
+    return (headlines, bodies, classifications)
+
+def zip_segments(segments):
+    headlines, bodies, classifications = segments
+    return zip(headlines, bodies, classifications)

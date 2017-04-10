@@ -25,7 +25,7 @@ https://github.com/FakeNewsChallenge/fnc-1-baseline
   1. lemmatizes and lowercases word from nltk
   2. removes stop words
   3. uses a list of hardcoded refuting features for headline (returns 1 if a refuting word is in the headline, otherwise 0) 
-  4. uses a list of hardcoded polarity features (1 if polarizing, otherwise 0) for both headline and body
+  4. uses a list of refuting words to calcuate the polarity by returning the sum of the number of times a refuting terms in the headline or body.
   5. counts how many times a token in the title appears in the body
   6. count how many times an n-gram of the title appears in the entire body and intro paragraph
 
@@ -35,4 +35,7 @@ https://github.com/FakeNewsChallenge/fnc-1-baseline
 
 ## Support Vector Machine
 At the heart of this project's classification system is a support vector machine (SVM). A SVM is a supervised learning model used for classification and regression analysis.
+
+The SVM handles multi-classification by a One-vs.-one scheme:
   1. http://www.svm-tutorial.com/2017/02/svms-overview-support-vector-machines/
+  2. https://en.wikipedia.org/wiki/Multiclass_classification#One-vs.-one

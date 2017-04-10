@@ -60,7 +60,6 @@ def get_n_grams_relevance(headline, body):
 
 
 def get_feature_set(headline, body):
-    features = {}
     cleaned_headline = tokenizer.clean(headline)
     cleaned_body = tokenizer.clean(body)
 
