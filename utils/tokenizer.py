@@ -14,8 +14,8 @@ def lemmatize_text(tokenizedText):
         try:
             lemma = wnl.lemmatize(word).lower()
             lemmatizedText.append(lemma)
-        except UnicodeDecodeError:
-            next
+        except:
+            continue
 
     return lemmatizedText
 
