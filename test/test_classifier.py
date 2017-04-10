@@ -2,6 +2,7 @@ from __future__ import division
 import unittest
 from tqdm import tqdm
 from utils.dataset import DataSet, segmentize_dataset, zip_segments
+import utils.scorer as Scorer
 import features.features as FeatureFactory
 from classifier import Classifier
 
@@ -21,16 +22,17 @@ class TestClassifier(unittest.TestCase):
                                 stances="test_stances.csv")
         test_segments = segmentize_dataset(test_data_set)
         entries = zip_segments(test_segments)
-        correct_hits = 0
+        test_classifications = []
+        predictions = []
         print ( 'Testing against test stances...')
         for entry in tqdm(entries):
             headline, body, classification = entry
             prediction = classifier.predict(headline, body)
-            if classification == prediction:
-                correct_hits += 1
+            predictions.append(prediction)
+            test_classifications.append(classification)
 
-        success_rate = (correct_hits / len(entries)) * 100
-        print ("Test Results: {:10.4f}".format(success_rate))
+        Scorer.report_score(test_classifications, predictions)
+
 
 
 
