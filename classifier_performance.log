@@ -1,0 +1,80 @@
+63.2653061224%
+==== USING ====
+Features: co_occurence, polarity, refuting, n_grams
+Training Size: 50
+
+63.2653061224%
+==== USING ====
+Features: co_occurence, polarity, refuting, n_grams
+Training Size: 50
+
+63.3525949128%
+==== USING ====
+Features: co_occurence, polarity, refuting, n_grams, word_overlap
+Training Size: 5000
+
+63.3525949128%
+==== USING ====
+Features: co_occurence, polarity, refuting, n_grams, word_overlap
+Training Size: 5000
+
+27.2727272727%
+==== USING ====
+Features: co_occurence, polarity, refuting, n_grams, word_overlap
+Training Size: 50
+
+27.2727272727%
+==== USING ====
+Features: co_occurence, polarity, refuting, n_grams, word_overlap
+Training Size: 50
+
+27.2727272727%
+==== USING ====
+Features: co_occurence
+Training Size: 50
+
+27.2727272727%
+==== USING ====
+Features: co_occurence, n_grams
+Training Size: 50
+
+27.2727272727%
+==== USING ====
+Features: co_occurence, n_grams
+Training Size: 50
+
+27.2727272727%
+==== USING ====
+Features: co_occurence, n_gram
+Training Size: 50
+
+27.2727272727%
+==== USING ====
+Features: co_occurence, n_grams
+Training Size: 50
+
+27.2727272727%
+==== USING ====
+Features: co_occurence, n_grams
+Training Size: 50
+
+27.2727272727%
+==== USING ====
+Features: co_occurence, n_grams
+Training Size: 50
+
+62.2914078954%
+==== USING ====
+Features: co_occurence, n_grams, polarity
+Training Size: 5000
+
+64.0654533672%
+==== USING ====
+Features: co_occurence, n_grams
+Training Size: 5000
+
+57.109682994%
+==== USING ====
+Features: co_occurence
+Training Size: 5000
+
