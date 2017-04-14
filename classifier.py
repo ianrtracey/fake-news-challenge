@@ -35,17 +35,21 @@ class Classifier(object):
 
     def _get_features(self, headline, body):
         feature_set = FeatureFactory.get_feature_set(headline, body)
+           # TODO: compute n-grams from 2..6
         ngram_hits = feature_set.n_grams[0]
         ngram_early_hits = feature_set.n_grams[1] 
+        n_gram_first_hits = feature_set.n_grams[2]
         polarity_headline = feature_set.polarity[0]
         polarity_body = feature_set.polarity[1]
-        feature = [feature_set.co_occurence, polarity_headline, polarity_body, ngram_hits, ngram_early_hits]
+        word_overlap = feature_set.word_overlap
+        feature = [feature_set.co_occurence, polarity_headline, polarity_body, ngram_hits, ngram_early_hits, word_overlap]
         return feature
+
+    def get_supported_features(self):
+        return FeatureFactory.get_supported_features()
 
 
 
     def predict(self, headline, body):
         features = self._get_features(headline, body)
         return self.classifier.predict(features)
-
-
