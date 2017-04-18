@@ -4,8 +4,8 @@ from nltk.tokenize import word_tokenize
 from sklearn import feature_extraction
 
 def tokenize_text(text):
-    cleaned_text = " ".join(re.findall(r'\w+', text, flags=re.UNICODE)).lower()
-    return word_tokenize(cleaned_text)
+    words = word_tokenize(text)
+    return words
 
 def lemmatize_text(tokenizedText):
     wnl = WordNetLemmatizer()
@@ -28,7 +28,6 @@ def clean(text):
     tokenizedText = tokenize_text(text)
     lemmatizedText = lemmatize_text(tokenizedText)
     result = remove_stop_words(lemmatizedText)
-    ascii_result = [word.encode('ascii') for word in result]
-    return ascii_result
+    return result
 
 

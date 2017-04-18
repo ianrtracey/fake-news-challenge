@@ -3,6 +3,7 @@ from tqdm import tqdm
 import features.features as FeatureFactory
 from utils.dataset import DataSet
 from utils.ngram import get_n_gram
+from utils.utils import flatten
 from sklearn import svm
 import numpy as np
 
@@ -27,6 +28,7 @@ class Classifier(object):
             restricted_features = False
 
         print ( "[Classifier]: Collecting features..." )
+
         for article in tqdm(articles):
             headline = article[0]
             body = article[1]
@@ -68,6 +70,9 @@ class Classifier(object):
         if self._feature_switch('co_occurence'): 
             co_occurence = feature_set.co_occurence
             features.append(co_occurence)
+        if self._feature_switch('refuting'):
+            refuting_words_in_headline = feature_set.refuting
+            # features.append(refuting_words_in_headline)
 
         return features
 

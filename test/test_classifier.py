@@ -16,9 +16,7 @@ class TestClassifier(unittest.TestCase):
         classifier = Classifier(train_headlines,
                                 train_bodies,
                                 train_classifications,
-                                size=TRAINING_SIZE,
-                                features=['co_occurence'
-                                         ])
+                                size=TRAINING_SIZE)
 
         test_data_set = DataSet(path="data",
                                 bodies="train_bodies.csv",

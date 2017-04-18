@@ -10,7 +10,7 @@ def get_supported_features():
 
 
 # assuming that the body and the headline are paired via BodyID
-def get_refuting_feature(headline, body):
+def get_refuting_feature(headline):
     result = [1 if term in headline else 0 for term in REFUTING_TERMS]
     return result
 
@@ -53,17 +53,6 @@ def get_n_grams_relevance(headline, body):
     return (n_gram_hits, n_gram_early_hits, n_gram_first_hits)
 
 
-    # we might want to loop over n-grams from 0-10 or
-    # something here in order to catch more exact terms
-    tri_grams = get_n_gram(body, 2)
-    n_gram_hit_count = 0
-    for gram in tri_grams:
-        gram_str = " ".join(gram)
-        if gram_str in headline_str:
-            n_gram_hit_count += 1
-
-    return n_gram_hit_count
-
 def get_word_overlap(headline, body):
     headline_set = set(headline)
     body_set = set(body)
@@ -80,7 +69,7 @@ def get_feature_set(headline, body):
                     get_supported_features())
     co_occurence = get_binary_co_occurence(cleaned_headline, cleaned_body)
     polarity_score = get_polarity_feature(cleaned_headline, cleaned_body)
-    refuting_score = get_refuting_feature(cleaned_headline, cleaned_body)
+    refuting_score = get_refuting_feature(cleaned_headline)
     n_gram_hits = get_n_grams_relevance(cleaned_headline, cleaned_body)
     word_overlap = get_word_overlap(cleaned_headline, cleaned_body)
 
