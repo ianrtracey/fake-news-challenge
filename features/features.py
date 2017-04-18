@@ -17,8 +17,8 @@ def get_refuting_feature(headline):
 # returns (headline_polarity, body_polarity)
 # NOTE: in the original baseline, each polarity result is %2 WHY?
 def get_polarity_feature(headline, body):
-    headline_polarity = sum([token in REFUTING_TERMS for token in headline])
-    body_polarity = sum([token in REFUTING_TERMS for token in body])
+    headline_polarity = sum([1 if token in REFUTING_TERMS else 0 for token in headline])
+    body_polarity = sum([1 if token in REFUTING_TERMS else 0 for token in body])
     return (headline_polarity, body_polarity)
 
 # count how many times a token from the headline appears in the body
@@ -73,5 +73,6 @@ def get_feature_set(headline, body):
     n_gram_hits = get_n_grams_relevance(cleaned_headline, cleaned_body)
     word_overlap = get_word_overlap(cleaned_headline, cleaned_body)
 
+    import pdb; pdb.set_trace()
     feature_set = FeatureSet(co_occurence, polarity_score, refuting_score, n_gram_hits, word_overlap)
     return feature_set

@@ -16,7 +16,8 @@ class UTF8Recoder:
         return self
 
     def next(self):
-        return self.reader.next().encode("utf-8")
+        result = self.reader.next().encode("utf-8")
+        return result.encode("ascii", "ignore")
 
 class UnicodeDictReader:
     """
@@ -65,7 +66,7 @@ class DataSet():
     def read(self,filename):
         rows = []
         with codecs.open(self.path + "/" + filename, "r", encoding="utf-8") as table:
-            r = DictReader(table)
+            r = UnicodeDictReader(table)
 
             for line in r:
                 rows.append(line)
