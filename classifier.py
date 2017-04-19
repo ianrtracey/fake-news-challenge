@@ -6,6 +6,18 @@ from utils.ngram import get_n_gram
 from utils.utils import flatten
 from sklearn import svm
 import numpy as np
+from functools import partial
+from multiprocessing import Pool, cpu_count
+
+# where article is is a tuple (headline, body)
+def multi_process_get_features(classifier, article):
+    headline = article[0]
+    body = article[1]
+    feature = classifier._get_features(headline, body)
+    return feature
+
+def foobar(s, article):
+    return (article[1], article[0])
 
 class Classifier(object):
     def __init__(self, train_headlines, train_bodies, classifications, **options):
@@ -18,7 +30,7 @@ class Classifier(object):
             self.training_size = size
         else:
             articles = zip(train_headlines, train_bodies)
-            self.trainin_size = len(articles)
+            self.training_size = len(articles)
 
         features = []
         if 'features' in options:
@@ -27,13 +39,23 @@ class Classifier(object):
         else:
             restricted_features = False
 
+        cpus = cpu_count()
+        print ( "Using {0} Processes (based on number of CPUs available)".format(cpus ))
+        pool = Pool(processes=cpus)
+        pbar = tqdm(total=len(articles))
         print ( "[Classifier]: Collecting features..." )
+        c = self
+        pbar = tqdm(total=len(articles))
+        get_features = partial(multi_process_get_features, c)
+        features = []
+        for i, result in tqdm(enumerate(pool.imap_unordered(get_features, articles))):
+            pbar.update()
+            features.append(result)
+        pool.close()
+        pool.join()
+        pbar.close()
+        print(len(features))
 
-        for article in tqdm(articles):
-            headline = article[0]
-            body = article[1]
-            feature = self._get_features(headline, body)
-            features.append(feature)
 
         print ( "[Classifier]: Done." )
         classifier = svm.SVC()

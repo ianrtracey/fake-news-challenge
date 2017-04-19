@@ -5,6 +5,14 @@ from utils.dataset import DataSet, segmentize_dataset, zip_segments
 import utils.scorer as Scorer
 import features.features as FeatureFactory
 from classifier import Classifier
+from functools import partial
+from multiprocessing import Pool, cpu_count
+
+
+def multiprocessing_predict(classifier, entry):
+    headline, body, classification = entry
+    prediction = classifier.predict(headline, body)
+    return (prediction, classification)
 
 class TestClassifier(unittest.TestCase):
 
@@ -16,21 +24,32 @@ class TestClassifier(unittest.TestCase):
         classifier = Classifier(train_headlines,
                                 train_bodies,
                                 train_classifications,
-                                size=TRAINING_SIZE)
+                                size=TRAINING_SIZE,
+                                features=['n_grams', 'co_occurence'])
 
         test_data_set = DataSet(path="data",
                                 bodies="train_bodies.csv",
                                 stances="test_stances.csv")
         test_segments = segmentize_dataset(test_data_set)
         entries = zip_segments(test_segments)
+        
+        cpus = cpu_count()
+        print ( "Using {0} Processes (based on number of CPUs available)".format(cpus ))
+        pool = Pool(processes=cpus)
+        pbar = tqdm(total=len(entries))
+        print ( 'Testing against test stances...')
+        get_prediction = partial(multiprocessing_predict, classifier)
         test_classifications = []
         predictions = []
-        print ( 'Testing against test stances...')
-        for entry in tqdm(entries):
-            headline, body, classification = entry
-            prediction = classifier.predict(headline, body)
+        for i, result in tqdm(enumerate(pool.imap_unordered(get_prediction, entries))):
+            pbar.update()
+            prediction, classification = result
             predictions.append(prediction)
             test_classifications.append(classification)
+        pool.close()
+        pool.join()
+        pbar.close()
+        print(len(predictions))
 
         # prints omatrix and score and returns it
         logging_results = []

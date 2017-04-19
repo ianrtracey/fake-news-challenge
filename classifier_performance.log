@@ -78,3 +78,43 @@ Training Size: 5000
 Features: co_occurence
 Training Size: 5000
 
+12.5776313658%
+==== USING ====
+Features: co_occurence, polarity, refuting, n_grams, word_overlap
+Training Size: 5000
+
+13.0717718853%
+==== USING ====
+Features: co_occurence, polarity, refuting, n_grams, word_overlap
+Training Size: 1000
+
+11.7594642761%
+==== USING ====
+Features: co_occurence, polarity, refuting, n_grams, word_overlap
+Training Size: 5000
+
+59.1807528217%
+==== USING ====
+Features: co_occurence, polarity, refuting, n_grams, word_overlap
+Training Size: 5000
+
+58.3976886105%
+==== USING ====
+Features: co_occurence, polarity, refuting, n_grams, word_overlap
+Training Size: 5000
+
+59.6883944483%
+==== USING ====
+Features: co_occurence, n_grams
+Training Size: 5000
+
+14.1788626667%
+==== USING ====
+Features: co_occurence, polarity, refuting, n_grams, word_overlap
+Training Size: 5000
+
+9.55608359886%
+==== USING ====
+Features: n_grams, co_occurence
+Training Size: 5000
+

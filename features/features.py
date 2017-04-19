@@ -65,14 +65,12 @@ def get_feature_set(headline, body):
     cleaned_headline = tokenizer.clean(headline)
     cleaned_body = tokenizer.clean(body)
 
-    FeatureSet = collections.namedtuple('FeatureSet',
-                    get_supported_features())
+    FeatureSet = collections.namedtuple('FeatureSet', get_supported_features())
     co_occurence = get_binary_co_occurence(cleaned_headline, cleaned_body)
     polarity_score = get_polarity_feature(cleaned_headline, cleaned_body)
     refuting_score = get_refuting_feature(cleaned_headline)
     n_gram_hits = get_n_grams_relevance(cleaned_headline, cleaned_body)
     word_overlap = get_word_overlap(cleaned_headline, cleaned_body)
 
-    import pdb; pdb.set_trace()
     feature_set = FeatureSet(co_occurence, polarity_score, refuting_score, n_gram_hits, word_overlap)
     return feature_set
