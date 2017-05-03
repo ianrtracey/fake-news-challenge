@@ -6,6 +6,7 @@ from utils.ngram import get_n_gram
 from utils.utils import flatten
 from sklearn import svm
 import numpy as np
+import logging
 
 class Classifier(object):
     def __init__(self, train_headlines, train_bodies, classifications, **options):
@@ -18,7 +19,7 @@ class Classifier(object):
             self.training_size = size
         else:
             articles = zip(train_headlines, train_bodies)
-            self.trainin_size = len(articles)
+            self.training_size = len(articles)
 
         features = []
         if 'features' in options:
@@ -29,50 +30,66 @@ class Classifier(object):
 
         print ( "[Classifier]: Collecting features..." )
 
+        i = 0
         for article in tqdm(articles):
+            logging.debug("stance: {}".format(classifications[i]))
             headline = article[0]
             body = article[1]
-            feature = self._get_features(headline, body)
+            feature = FeatureFactory.get_features_related(headline, body)
+            i += 1
             features.append(feature)
 
         print ( "[Classifier]: Done." )
         classifier = svm.SVC()
-        features_np = np.asarray(features)
-        classifications_np = np.asarray(classifications)
+        # sanitize classifications for bi-classification (related/unrelated)
+        fc_pairs = zip(features, classifications)
+        related_unrelated_pairs = []
+        for pair in fc_pairs:
+            feature, classification = pair
+            if classification == 'unrelated':
+                related_unrelated_pairs.append( (feature, 'unrelated') )
+            else:
+                related_unrelated_pairs.append( (feature, 'related') )
+
+        related_unrelated_features, related_unrelated_classifications = zip(*related_unrelated_pairs)
+
+        classifications_np = np.asarray(related_unrelated_classifications)
+        features_np = np.asarray(related_unrelated_features)
         print ( "[Classifier]: Fitting training data...")
         classifier.fit(features_np, classifications_np)
         print ( "[Classifier]: Done." ) 
         self.classifier = classifier
-   
+
     def _feature_switch(self, feature_name):
         return 'supported_features' not in dir(self) or feature_name in self.supported_features
+
+
 
 
     def _get_features(self, headline, body):
         feature_set = FeatureFactory.get_feature_set(headline, body)
         # TODO: compute n-grams from 2..6
         features = []
-        if self._feature_switch('n_grams'): 
-            ngram_hits = feature_set.n_grams[0]
-            ngram_early_hits = feature_set.n_grams[1] 
-            n_gram_first_hits = feature_set.n_grams[2]
-            features.append(ngram_hits)
-            features.append(ngram_early_hits)
-            features.append(n_gram_first_hits)
-        if self._feature_switch('polarity'): 
-            polarity_headline = feature_set.polarity[0]
-            polarity_body = feature_set.polarity[1]
-            features.append(polarity_headline)
-            features.append(polarity_body)
-        if self._feature_switch('word_overlap'): 
-            word_overlap = feature_set.word_overlap
-            features.append(word_overlap)
-        if self._feature_switch('co_occurence'): 
-            co_occurence = feature_set.co_occurence
-            features.append(co_occurence)
-        if self._feature_switch('refuting'):
-            refuting_words_in_headline = feature_set.refuting
-            # features.append(refuting_words_in_headline)
+        ngram_hits = feature_set.n_grams[0]
+        ngram_early_hits = feature_set.n_grams[1] 
+        n_gram_first_hits = feature_set.n_grams[2]
+        features.append(ngram_hits)
+        features.append(ngram_early_hits)
+        features.append(n_gram_first_hits)
+
+        polarity_headline = feature_set.polarity[0]
+        polarity_body = feature_set.polarity[1]
+        features.append(polarity_headline)
+        features.append(polarity_body)
+
+        word_overlap = feature_set.word_overlap
+        features.append(word_overlap)
+
+        co_occurence = feature_set.co_occurence
+        features.append(co_occurence)
+
+        refuting_words_in_headline = feature_set.refuting
+        features.append(refuting_words_in_headline)
 
         return features
 
@@ -85,5 +102,5 @@ class Classifier(object):
         return self.training_size
 
     def predict(self, headline, body):
-        features = self._get_features(headline, body)
-        return self.classifier.predict(features)
+        features = FeatureFactory.get_features_related(headline, body)
+        return self.classifier.predict([features])

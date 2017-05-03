@@ -78,3 +78,8 @@ Training Size: 5000
 Features: co_occurence
 Training Size: 5000
 
+13.0231678998%
+==== USING ====
+Features: co_occurence, n_grams, word_overlap
+Training Size: 5000
+

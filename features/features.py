@@ -2,6 +2,8 @@ from utils.terms import REFUTING_TERMS
 from utils.ngram import get_n_gram
 import utils.tokenizer as tokenizer
 import collections
+import logging
+
 
 
 # NOTE: All features assume that the headline and body are tokenized, lemmatized, ext
@@ -60,19 +62,51 @@ def get_word_overlap(headline, body):
     num_all_words = len(headline_set.union(body_set))
     return float(num_shared_words) / float(num_all_words)
 
-
-def get_feature_set(headline, body):
+def clean(headline, body):
     cleaned_headline = tokenizer.clean(headline)
     cleaned_body = tokenizer.clean(body)
+    return (cleaned_headline, cleaned_body)
 
-    FeatureSet = collections.namedtuple('FeatureSet',
-                    get_supported_features())
+def get_features_related(headline, body):
+    cleaned_headline, cleaned_body = clean(headline, body)
+
+    n_grams = get_n_grams_relevance(cleaned_headline, cleaned_body)
+    ngram_hits = n_grams[0]
+    ngram_early_hits = n_grams[1] 
+    n_gram_first_hits = n_grams[2]
+
+    word_overlap = get_word_overlap(cleaned_headline, cleaned_body)
+
+    co_occurence = get_binary_co_occurence(cleaned_headline, cleaned_body) 
+
+    features = []
+    features.append(ngram_hits)
+    features.append(ngram_early_hits)
+    features.append(n_gram_first_hits)
+    features.append(co_occurence)
+    features.append(word_overlap)
+    return features
+
+
+def get_feature_set(headline, body):
+    logging.debug("Headline: %s" % headline)
+    logging.debug("Body: %s" % headline)
+    cleaned_headline, cleaned_body = clean(headline, body)
+    logging.debug("Cleaned Headline: %s" % cleaned_headline)
+    logging.debug("Cleaned Body: %s" % cleaned_body)
+    FeatureSet = collections.namedtuple('FeatureSet', get_supported_features())
     co_occurence = get_binary_co_occurence(cleaned_headline, cleaned_body)
     polarity_score = get_polarity_feature(cleaned_headline, cleaned_body)
     refuting_score = get_refuting_feature(cleaned_headline)
     n_gram_hits = get_n_grams_relevance(cleaned_headline, cleaned_body)
     word_overlap = get_word_overlap(cleaned_headline, cleaned_body)
+    logging.debug("======== Features ========") 
+    logging.debug("CoOccurence: {}".format(co_occurence))
+    logging.debug("Polarity: {}".format(polarity_score)) 
+    logging.debug("Refuting: {}".format(refuting_score)) 
+    logging.debug("n_gram hits: {}".format(n_gram_hits))
+    logging.debug("word overlap: {}".format(word_overlap)) 
+    logging.debug("\n\n")
 
-    import pdb; pdb.set_trace()
     feature_set = FeatureSet(co_occurence, polarity_score, refuting_score, n_gram_hits, word_overlap)
     return feature_set

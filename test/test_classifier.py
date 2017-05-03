@@ -5,18 +5,22 @@ from utils.dataset import DataSet, segmentize_dataset, zip_segments
 import utils.scorer as Scorer
 import features.features as FeatureFactory
 from classifier import Classifier
+import logging
 
 class TestClassifier(unittest.TestCase):
 
-    def test_benchmark(self):
-        TRAINING_SIZE = 5000
+    def test_partial_related_unrelated(self):
+        TRAINING_SIZE = 1000
+        TESTING_SIZE = 2000
+
         dataset = DataSet()
         segments = segmentize_dataset(dataset)
         train_headlines, train_bodies, train_classifications = segments
         classifier = Classifier(train_headlines,
                                 train_bodies,
                                 train_classifications,
-                                size=TRAINING_SIZE)
+                                size=TRAINING_SIZE) 
+
 
         test_data_set = DataSet(path="data",
                                 bodies="train_bodies.csv",
@@ -26,31 +30,24 @@ class TestClassifier(unittest.TestCase):
         test_classifications = []
         predictions = []
         print ( 'Testing against test stances...')
-        for entry in tqdm(entries):
+        for entry in tqdm(entries[:TESTING_SIZE]):
             headline, body, classification = entry
             prediction = classifier.predict(headline, body)
             predictions.append(prediction)
-            test_classifications.append(classification)
+            if classification == 'unrelated':
+                test_classifications.append('unrelated')
+            else:
+                test_classifications.append('related')
 
-        # prints omatrix and score and returns it
-        logging_results = []
-        score = Scorer.report_score(test_classifications, predictions)
-        logging_results.append(str(score) + "%")
-        logging_results.append("==== USING ====")
-        features_used = ", ".join(classifier.get_supported_features())
-        logging_results.append("Features: {0}".format(features_used))
-        logging_results.append("Training Size: {0}".format(TRAINING_SIZE))
-        print ( "\n".join(logging_results) )
+        hits = 0
+        results = zip(predictions, test_classifications)
+        for result in results:
+            prediction, actual = result
+            if prediction == actual:
+                hits += 1
 
-
-        # write out to log file
-        with open("classifier_performance.log", "a") as LogFile:
-            LogFile.write( "\n".join(logging_results) + "\n\n" )
-
-
-
-
-
+        print ("Result: {0}%".format(float(hits) / float(TESTING_SIZE)))
 
 if __name__ == '__main__':
+    logging.basicConfig(filename="features.log", level=logging.DEBUG)
     unittest.main()
