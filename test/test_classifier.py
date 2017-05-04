@@ -10,8 +10,8 @@ import logging
 class TestClassifier(unittest.TestCase):
 
     def test_partial_related_unrelated(self):
-        TRAINING_SIZE = 1000
-        TESTING_SIZE = 2000
+        TRAINING_SIZE = 300
+        TESTING_SIZE = 400
 
         dataset = DataSet()
         segments = segmentize_dataset(dataset)
@@ -19,7 +19,8 @@ class TestClassifier(unittest.TestCase):
         classifier = Classifier(train_headlines,
                                 train_bodies,
                                 train_classifications,
-                                size=TRAINING_SIZE) 
+                                size=TRAINING_SIZE,
+                                debug=True) 
 
 
         test_data_set = DataSet(path="data",
@@ -34,19 +35,11 @@ class TestClassifier(unittest.TestCase):
             headline, body, classification = entry
             prediction = classifier.predict(headline, body)
             predictions.append(prediction)
-            if classification == 'unrelated':
-                test_classifications.append('unrelated')
-            else:
-                test_classifications.append('related')
+            test_classifications.append(classification)
+        
+        score = Scorer.report_score(test_classifications, predictions)
+        print ( score )
 
-        hits = 0
-        results = zip(predictions, test_classifications)
-        for result in results:
-            prediction, actual = result
-            if prediction == actual:
-                hits += 1
-
-        print ("Result: {0}%".format(float(hits) / float(TESTING_SIZE)))
 
 if __name__ == '__main__':
     logging.basicConfig(filename="features.log", level=logging.DEBUG)

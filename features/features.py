@@ -67,7 +67,7 @@ def clean(headline, body):
     cleaned_body = tokenizer.clean(body)
     return (cleaned_headline, cleaned_body)
 
-def get_features_related(headline, body):
+def get_features_relatedness(headline, body):
     cleaned_headline, cleaned_body = clean(headline, body)
 
     n_grams = get_n_grams_relevance(cleaned_headline, cleaned_body)
@@ -86,6 +86,14 @@ def get_features_related(headline, body):
     features.append(co_occurence)
     features.append(word_overlap)
     return features
+
+def get_features_stance(headline, body):
+    cleaned_headline, cleaned_body = clean(headline, body)
+
+    headline_polarity, body_polarity = get_polarity_feature(headline, body)
+    return (headline_polarity, body_polarity)
+
+
 
 
 def get_feature_set(headline, body):
