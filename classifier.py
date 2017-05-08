@@ -26,15 +26,13 @@ class Classifier(object):
         stance_features = []
         for article in tqdm(articles):
             headline, body, classification = article
-            if 'debug' in options:
-                logging.debug( ("{0}\n{1}\n{2}\n".format(headline, body, classification)))
 
             related_features = FeatureFactory.get_features_relatedness(headline, body)
             relatedness_features.append( (related_features, classification) )
             if classification != 'unrelated':
                 stance_feature = FeatureFactory.get_features_stance(headline, body)
                 if 'debug' in options:
-                    logging.debug("{0}\n\n".format(stance_feature))
+                    logging.debug("{0} <> {1}\n".format(stance_feature, classification))
                 stance_features.append( (stance_feature, classification) )
 
         features, classifications = zip(*relatedness_features)
@@ -48,7 +46,6 @@ class Classifier(object):
         classifications_np = np.asarray(classifications)
         features_np = np.asarray(features)
         print ( "[classifier]: fitting training data...")
-        print (features_np)
         stance_classifier.fit(features_np, classifications_np)
         print ( "[classifier]: done." ) 
         return stance_classifier

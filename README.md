@@ -39,3 +39,4 @@ At the heart of this project's classification system is a support vector machine
 The SVM handles multi-classification by a One-vs.-one scheme:
   1. http://www.svm-tutorial.com/2017/02/svms-overview-support-vector-machines/
   2. https://en.wikipedia.org/wiki/Multiclass_classification#One-vs.-one
+  https://github.com/wooorm/hedges/blob/master/data.txt

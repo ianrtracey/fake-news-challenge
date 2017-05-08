@@ -1,14 +1,21 @@
 import re
 from nltk import pos_tag
-from nltk.stem import WordNetLemmatizer
+from nltk.corpus import wordnet
+from nltk.stem import WordNetLemmatizer, PorterStemmer
 from nltk.tokenize import word_tokenize
 from sklearn import feature_extraction
 
-def word_net_tag(pos_tag):
-    wordnet_tag = {'NN':'n','JJ':'a','VB':'v','RB':'r'}
-    if pos_tag not in wordnet_tag.keys():
-        return None
-    return wordnet_tag[pos_tag]
+def word_net_tag(treebank_tag):
+    if treebank_tag.startswith('J'):
+        return wordnet.ADJ
+    elif treebank_tag.startswith('V'):
+        return wordnet.VERB
+    elif treebank_tag.startswith('N'):
+        return wordnet.NOUN
+    elif treebank_tag.startswith('R'):
+        return wordnet.ADV
+    else:
+        return ''
 
 def tokenize_text(text):
     words = word_tokenize(text)
@@ -18,6 +25,10 @@ def tokenize_text(text):
             result.append(word)
     return result
 
+def stem_word(word):
+    pass
+
+
 def lemmatize_text(tokenizedText):
     wnl = WordNetLemmatizer()
     lemmatizedText = []
@@ -25,7 +36,7 @@ def lemmatize_text(tokenizedText):
         try:
             _, pos = pos_tag([word.lower()])[0]
             tag = word_net_tag(pos)
-            if tag is not None:
+            if tag != '':
                 lemma = wnl.lemmatize(word.lower(), pos=tag)
             else:
                 lemma = wnl.lemmatize(word.lower())

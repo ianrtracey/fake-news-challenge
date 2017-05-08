@@ -1,4 +1,4 @@
-from utils.terms import REFUTING_TERMS
+from utils.terms import REFUTING_TERMS, HEDGING_WORDS
 from utils.ngram import get_n_gram
 import utils.tokenizer as tokenizer
 import collections
@@ -87,11 +87,34 @@ def get_features_relatedness(headline, body):
     features.append(word_overlap)
     return features
 
+def get_hedging_freq(headline, body):
+    headline_hedging_freq = sum([1 if word in HEDGING_WORDS else 0 for word in headline])
+    body_hedging_freq = sum([1 if word in HEDGING_WORDS else 0 for word in body])
+    return (headline_hedging_freq, body_hedging_freq)
+
+
 def get_features_stance(headline, body):
     cleaned_headline, cleaned_body = clean(headline, body)
 
-    headline_polarity, body_polarity = get_polarity_feature(headline, body)
-    return (headline_polarity, body_polarity)
+    stance_features = []
+    headline_polarity, body_polarity = get_polarity_feature(cleaned_headline, cleaned_body)
+    # identifies documents that agree or disagree
+    headline_hedge, body_hedge = get_hedging_freq(cleaned_headline, cleaned_body)
+
+    n_grams = get_n_grams_relevance(cleaned_headline, cleaned_body)
+    ngram_hits = n_grams[0]
+    ngram_early_hits = n_grams[1] 
+    n_gram_first_hits = n_grams[2]
+
+    hedge_delta = abs(headline_hedge - body_hedge)
+    polarity_delta = abs(headline_polarity - body_polarity)
+    stance_features.append(hedge_delta)
+    stance_features.append(polarity_delta)
+    stance_features.append(ngram_hits)
+    stance_features.append(ngram_early_hits)
+    stance_features.append(n_gram_first_hits)
+    return stance_features
+
 
 
 
