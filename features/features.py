@@ -106,10 +106,10 @@ def get_features_stance(headline, body):
     ngram_early_hits = n_grams[1] 
     n_gram_first_hits = n_grams[2]
 
-    hedge_delta = abs(headline_hedge - body_hedge)
-    polarity_delta = abs(headline_polarity - body_polarity)
-    stance_features.append(hedge_delta)
-    stance_features.append(polarity_delta)
+    stance_features.append(headline_polarity)
+    stance_features.append(body_polarity)
+    stance_features.append(headline_hedge)
+    stance_features.append(body_hedge)
     stance_features.append(ngram_hits)
     stance_features.append(ngram_early_hits)
     stance_features.append(n_gram_first_hits)
