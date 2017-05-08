@@ -25,9 +25,12 @@ def tokenize_text(text):
             result.append(word)
     return result
 
-def stem_word(word):
-    pass
-
+def stem_text(text):
+    stemmedText = []
+    stemmer = PorterStemmer()
+    for word in text:
+        stemmedText.append(stemmer.stem(word))
+    return stemmedText
 
 def lemmatize_text(tokenizedText):
     wnl = WordNetLemmatizer()
@@ -56,7 +59,7 @@ def remove_stop_words(tokenizedText):
 def clean(text):
     tokenizedText = tokenize_text(text)
     lemmatizedText = lemmatize_text(tokenizedText)
-    result = remove_stop_words(lemmatizedText)
-    return result
+    result = remove_top_words(lemmatizedText)
+    return tokenizedText 
 
 

@@ -6,9 +6,11 @@ import utils.scorer as Scorer
 import features.features as FeatureFactory
 from classifier import Classifier
 import time
+import logging
 
-TRAINING_SIZE = 1000
-TESTING_SIZE = 500
+logging.basicConfig(filename='mismatched.log', level=logging.DEBUG)
+TRAINING_SIZE = 2000
+TESTING_SIZE = 1000
 
 dataset = DataSet()
 segments = segmentize_dataset(dataset)
@@ -17,6 +19,7 @@ start = time.time()
 classifier = Classifier(train_headlines,
         train_bodies,
         train_classifications,
+        size=TRAINING_SIZE,
         debug=True) 
 
 test_data_set = DataSet(path="data",
@@ -27,10 +30,15 @@ entries = zip_segments(test_segments)
 test_classifications = []
 stance_features = []
 predictions = []
-for entry in tqdm(entries):
+for entry in tqdm(entries[:TESTING_SIZE]):
     headline, body, classification = entry
     prediction = classifier.predict(headline, body)
     predictions.append(prediction) 
+    if prediction != classification:
+        logging.debug("Headline: {0}\n".format(headline))
+        logging.debug("Body: {0}\n".format(body))
+        logging.debug("correct: {0}, predicted: {1}\n\n\n".format(classification, prediction))
+
     test_classifications.append(classification)
 
 hits = 0 
